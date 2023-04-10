@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const { mongoURI } = require('../config');
 
 require('dotenv').config();
 
@@ -10,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect('mongodb+srv://admin:bdr76CkDOOVHPq5D@luggageswapapi.psvof1m.mongodb.net/luggageswapAPI?retryWrites=true&w=majority')
+mongoose.connect(mongoURI)
   .then(() => 
     // Start the server
     app.listen(5000, () => console.log(`Server running on port 5000`)),
@@ -21,4 +22,4 @@ mongoose.connect('mongodb+srv://admin:bdr76CkDOOVHPq5D@luggageswapapi.psvof1m.mo
 
 // Routes
 app.use('/luggageswap', require('./routes/user'));
-
+ 
