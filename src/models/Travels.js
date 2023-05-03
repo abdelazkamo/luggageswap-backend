@@ -42,18 +42,24 @@ const Travelschema = new mongoose.Schema(
       trim: true,
     },
     my_price: {
-      type: String,
+      type: Number,
       required: true,
       trim: true,
     },
     max_kilos: {
-      type: String,
+      type: Number,
       required: true,
     },
     meet_point: {
       type: String,
       required: true,
       trim: true,
+    },
+    traveler_name: {
+      type: String,
+    },
+    Traveler_status: {
+      type: Boolean,
     },
     max_number_ofday: {
       type: Number,

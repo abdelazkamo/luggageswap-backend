@@ -2,7 +2,14 @@ const express = require("express");
 const TravelRouter = express.Router();
 const Travels = require("../models/Travels");
 const jwt = require("jsonwebtoken");
+const Users = require("../models/User");
 const { secretKey } = require("../../config");
+const {
+  CreateTravel,
+  LookupMyTravels,
+  UpdateTravel,
+  CancelTravel,
+} = require("../service/TravelService");
 //create a schedule
 TravelRouter.post("/create", async (req, res) => {
   try {
@@ -17,23 +24,73 @@ TravelRouter.post("/create", async (req, res) => {
       return;
     }
     const user_id = claims.id;
-    body["poster_id"] = user_id;
-    const date1Str = body.depart_date;
-    const date2Str = body.arrival_date;
 
-    const date1 = Date.parse(date1Str);
-    const date2 = Date.parse(date2Str);
+    const user = await Users.findById(user_id);
+    const travel = await CreateTravel(user, body);
+    res.json({ msg: "travel created  successfully", travel });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+}); //Lookup all my trips ///////////////////////////////
+TravelRouter.get("/myTravels", async (req, res) => {
+  try {
+    const cookie = req.cookies["jwt"];
 
-    const diffInMs = Math.abs(date2 - date1);
-    const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
-    body["max_number_ofday"] = diffInDays;
+    const claims = jwt.verify(cookie, secretKey);
 
-    const travel = new Travels(body);
-    travel.save();
-    res.json({ msg: "travel created  successfully" });
+    if (!claims) {
+      res.status(401).json({ message: "Unauthenticated" });
+      return;
+    }
+    const user_id = claims.id;
+    const Trips = await LookupMyTravels(user_id);
+
+    res.json({ msg: "travels fetched  successfully", Trips });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ msg: "Server error" });
   }
 });
+//update my trips before the day passed
+TravelRouter.put("/update/:id", async (req, res) => {
+  try {
+    const cookie = req.cookies["jwt"];
+
+    const claims = jwt.verify(cookie, secretKey);
+
+    if (!claims) {
+      res.status(401).json({ message: "Unauthenticated" });
+      return;
+    }
+    const travelID = req.params.id;
+    const body = req.body;
+    const data = await UpdateTravel(travelID, body);
+    res.json({ msg: "travels updated  successfully", data });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
+// cancel trip
+TravelRouter.delete("/delete/:id", async (req, res) => {
+  try {
+    const cookie = req.cookies["jwt"];
+
+    const claims = jwt.verify(cookie, secretKey);
+
+    if (!claims) {
+      res.status(401).json({ message: "Unauthenticated" });
+      return;
+    }
+    const travelID = req.params.id;
+
+    const data = await CancelTravel(travelID);
+    res.json({ msg: "travels deleted  successfully", data });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
+
 module.exports = TravelRouter;
