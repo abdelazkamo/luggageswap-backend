@@ -27,14 +27,120 @@ const ShommySends = async (start_country, end_country, sender_id) => {
           end_country: end_country,
           sender_id: sender_id,
         });
+        let array = [];
         let ids = [];
         for await (item of data) {
           ids.push(item.travel_id);
         }
+        const ids1 = ids.map((id) => new ObjectID(id));
+        const searchCriteria = { _id: { $in: ids1 } };
+        const travel = await Travels.find(searchCriteria);
+        data.forEach((item) => {
+          let match = travel.find((item1) => {
+            return item.travel_id === item1.id;
+          });
+          let object = {
+            _id: item._id,
+            start_country: item.start_country,
+            end_country: item.end_country,
+            status_from_poster: item.status_from_poster,
+            status_of_receiving: item.status_of_receiving,
+            start_date: match.depart_date,
+            end_date: match.arrival_date,
+          };
+          array.push(object);
+        });
+        resolve(array);
+      } else if (!start_country && end_country) {
+        const data = await Senders.find({
+          end_country: end_country,
+          sender_id: sender_id,
+        });
+        let array = [];
+        let ids = [];
+        for await (item of data) {
+          ids.push(item.travel_id);
+        }
+        const ids1 = ids.map((id) => new ObjectID(id));
+        const searchCriteria = { _id: { $in: ids1 } };
+        const travel = await Travels.find(searchCriteria);
+        data.forEach((item) => {
+          let match = travel.find((item1) => {
+            return item.travel_id === item1.id;
+          });
+          let object = {
+            _id: item._id,
+            start_country: item.start_country,
+            end_country: item.end_country,
+            status_from_poster: item.status_from_poster,
+            status_of_receiving: item.status_of_receiving,
+            start_date: match.depart_date,
+            end_date: match.arrival_date,
+          };
+          array.push(object);
+        });
+        resolve(array);
+      } else if (start_country && !end_country) {
+        const data = await Senders.find({
+          start_country: start_country,
+          sender_id: sender_id,
+        });
+        let array = [];
+        let ids = [];
+        for await (item of data) {
+          ids.push(item.travel_id);
+        }
+        const ids1 = ids.map((id) => new ObjectID(id));
+        const searchCriteria = { _id: { $in: ids1 } };
+        const travel = await Travels.find(searchCriteria);
+        data.forEach((item) => {
+          let match = travel.find((item1) => {
+            return item.travel_id === item1.id;
+          });
+          let object = {
+            _id: item._id,
+            start_country: item.start_country,
+            end_country: item.end_country,
+            status_from_poster: item.status_from_poster,
+            status_of_receiving: item.status_of_receiving,
+            start_date: match.depart_date,
+            end_date: match.arrival_date,
+          };
+          array.push(object);
+        });
+        resolve(array);
+      } else {
+        const data = await Senders.find({
+          sender_id: sender_id,
+        });
+        let array = [];
+        let ids = [];
+        for await (item of data) {
+          ids.push(item.travel_id);
+        }
+        const ids1 = ids.map((id) => new ObjectID(id));
+        const searchCriteria = { _id: { $in: ids1 } };
+        const travel = await Travels.find(searchCriteria);
+        data.forEach((item) => {
+          let match = travel.find((item1) => {
+            return item.travel_id === item1.id;
+          });
+          let object = {
+            _id: item._id,
+            start_country: item.start_country,
+            end_country: item.end_country,
+            status_from_poster: item.status_from_poster,
+            status_of_receiving: item.status_of_receiving,
+            start_date: match.depart_date,
+            end_date: match.arrival_date,
+          };
+          array.push(object);
+        });
+        resolve(array);
       }
     } catch (error) {
       reject(error);
     }
   });
 };
-module.exports = { Asksend };
+module.exports = { Asksend, ShommySends };
