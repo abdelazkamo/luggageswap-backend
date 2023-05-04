@@ -25,3 +25,4 @@ mongoose
 // Routes
 app.use("/luggageswap", require("./routes/user"));
 app.use("/travels", require("./routes/TravelRoute"));
+app.use("/sends", require("./routes/SenderRoute"));
