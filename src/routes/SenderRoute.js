@@ -1,6 +1,6 @@
 const express = require("express");
 const Sendrouter = express.Router();
-
+const Sender = require("../models/sends");
 const jwt = require("jsonwebtoken");
 const Users = require("../models/User");
 const { secretKey } = require("../../config");
@@ -48,6 +48,52 @@ Sendrouter.post("/showmysends", async (req, res) => {
       user_id
     );
     res.json({ msg: "travel created  successfully", travel });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
+//when i receive my laguage
+Sendrouter.put("/receive/:send_id", async (req, res) => {
+  try {
+    const id = req.params.send_id;
+    const cookie = req.cookies["jwt"];
+
+    const claims = jwt.verify(cookie, secretKey);
+
+    if (!claims) {
+      res.status(401).json({ message: "Unauthenticated" });
+      return;
+    }
+    const user_id = claims.id;
+    status_of_receiving = {
+      status_of_receiving: "yes",
+    };
+    const travel = await Sender.findByIdAndUpdate(id, status_of_receiving);
+    res.json({ msg: "lagguage received  successfully", travel });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
+//i travel who accept the sender request
+Sendrouter.put("/receive/:send_id", async (req, res) => {
+  try {
+    const id = req.params.send_id;
+    const cookie = req.cookies["jwt"];
+
+    const claims = jwt.verify(cookie, secretKey);
+
+    if (!claims) {
+      res.status(401).json({ message: "Unauthenticated" });
+      return;
+    }
+    const user_id = claims.id;
+    status_from_poster = {
+      status_from_poster: "accepted",
+    };
+    const travel = await Sender.findByIdAndUpdate(id, status_from_poster);
+    res.json({ msg: "lagguage received  successfully", travel });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ msg: "Server error" });
