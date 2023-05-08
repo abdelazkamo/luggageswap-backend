@@ -143,4 +143,38 @@ const ShommySends = async (start_country, end_country, sender_id) => {
     }
   });
 };
-module.exports = { Asksend, ShommySends };
+///// the senders of a travel
+const TravelSenders = async (travel_id, status_from_poster) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const send = await Senders.find({
+        travel_id: travel_id,
+        status_from_poster: status_from_poster,
+      });
+      let array = [];
+      let ids = [];
+      for await (item of send) {
+        ids.push(item.sender_id);
+      }
+      const ids1 = ids.map((id) => new ObjectID(id));
+      const searchCriteria = { _id: { $in: ids1 } };
+      const senders = await Users.find(searchCriteria);
+      send.forEach((item) => {
+        let match = senders.find((item1) => {
+          return item.sender_id === item1._id;
+        });
+        let object = {
+          sender_name: match.name,
+          status_of_receiving: item.status_of_receiving,
+          thing_to_send: item.thing_to_send,
+          kilo: item.kilo,
+        };
+        array.push(object);
+      });
+      resolve(array);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+module.exports = { Asksend, ShommySends, TravelSenders };
