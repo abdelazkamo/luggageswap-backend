@@ -1,6 +1,7 @@
 const express = require("express");
 const Sendrouter = express.Router();
 const Sender = require("../models/sends");
+const Travels = require("../models/Travels");
 const jwt = require("jsonwebtoken");
 const Users = require("../models/User");
 const { secretKey } = require("../../config");
@@ -9,6 +10,7 @@ const {
   ShommySends,
   TravelSenders,
 } = require("../service/SenderService");
+const { CreateMessages } = require("../service/MymessagesServices");
 Sendrouter.post("/create/:travel_id", async (req, res) => {
   try {
     const body = req.body;
@@ -22,7 +24,12 @@ Sendrouter.post("/create/:travel_id", async (req, res) => {
       return;
     }
     const user_id = claims.id;
-
+    const person1 = await Users.findById(user_id);
+    const person1name = person1.name;
+    const histravel = await Travels.findById(travel_id);
+    const person2_id = histravel.poster_id;
+    const person2name = histravel.traveler_name;
+    await CreateMessages(user_id, person2_id, person1name, person2name);
     // const user = await Users.findById(user_id);
     const travel = await Asksend(travel_id, user_id, body);
     res.json({ msg: "travel created  successfully", travel });
