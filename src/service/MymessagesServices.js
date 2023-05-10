@@ -109,7 +109,7 @@ const Showamessage = async (mymessage_id) => {
     }
   });
 };
-//creat a new message
+//creat a new message in a discussion
 const CreateMessages1 = async (
   conneted_id,
   discussion_id,
