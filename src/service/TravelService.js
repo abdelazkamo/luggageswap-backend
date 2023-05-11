@@ -66,7 +66,7 @@ const UpdateTravel = async (travelID, data) => {
   return new Promise(async (resolve, reject) => {
     try {
       const dataToupdate = await Travels.findByIdAndUpdate(travelID, data);
-      resolve(dataToupdate);
+      resolve(data);
     } catch (error) {
       reject(error);
     }

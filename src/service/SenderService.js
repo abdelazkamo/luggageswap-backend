@@ -32,23 +32,26 @@ const ShommySends = async (start_country, end_country, sender_id) => {
         for await (item of data) {
           ids.push(item.travel_id);
         }
-        const ids1 = ids.map((id) => new ObjectID(id));
+        const ids1 = ids;
         const searchCriteria = { _id: { $in: ids1 } };
         const travel = await Travels.find(searchCriteria);
         data.forEach((item) => {
           let match = travel.find((item1) => {
-            return item.travel_id === item1.id;
+            return item.travel_id.equals(item1._id);
           });
-          let object = {
-            _id: item._id,
-            start_country: item.start_country,
-            end_country: item.end_country,
-            status_from_poster: item.status_from_poster,
-            status_of_receiving: item.status_of_receiving,
-            start_date: match.depart_date,
-            end_date: match.arrival_date,
-          };
-          array.push(object);
+          if (match) {
+            let object = {
+              _id: item._id,
+              start_country: item.start_country,
+              end_country: item.end_country,
+              traveleler: match.traveler_name,
+              status_from_poster: item.status_from_poster,
+              status_of_receiving: item.status_of_receiving,
+              start_date: match.depart_date,
+              end_date: match.arrival_date,
+            };
+            array.push(object);
+          }
         });
         resolve(array);
       } else if (!start_country && end_country) {
@@ -61,23 +64,26 @@ const ShommySends = async (start_country, end_country, sender_id) => {
         for await (item of data) {
           ids.push(item.travel_id);
         }
-        const ids1 = ids.map((id) => new ObjectID(id));
+        const ids1 = ids;
         const searchCriteria = { _id: { $in: ids1 } };
         const travel = await Travels.find(searchCriteria);
         data.forEach((item) => {
           let match = travel.find((item1) => {
-            return item.travel_id === item1.id;
+            return item.travel_id.equals(item1._id);
           });
-          let object = {
-            _id: item._id,
-            start_country: item.start_country,
-            end_country: item.end_country,
-            status_from_poster: item.status_from_poster,
-            status_of_receiving: item.status_of_receiving,
-            start_date: match.depart_date,
-            end_date: match.arrival_date,
-          };
-          array.push(object);
+          if (match) {
+            let object = {
+              _id: item._id,
+              start_country: item.start_country,
+              end_country: item.end_country,
+              traveleler: match.traveler_name,
+              status_from_poster: item.status_from_poster,
+              status_of_receiving: item.status_of_receiving,
+              start_date: match.depart_date,
+              end_date: match.arrival_date,
+            };
+            array.push(object);
+          }
         });
         resolve(array);
       } else if (start_country && !end_country) {
@@ -90,23 +96,26 @@ const ShommySends = async (start_country, end_country, sender_id) => {
         for await (item of data) {
           ids.push(item.travel_id);
         }
-        const ids1 = ids.map((id) => new ObjectID(id));
+        const ids1 = ids;
         const searchCriteria = { _id: { $in: ids1 } };
         const travel = await Travels.find(searchCriteria);
         data.forEach((item) => {
           let match = travel.find((item1) => {
-            return item.travel_id === item1.id;
+            return item.travel_id.equals(item1._id);
           });
-          let object = {
-            _id: item._id,
-            start_country: item.start_country,
-            end_country: item.end_country,
-            status_from_poster: item.status_from_poster,
-            status_of_receiving: item.status_of_receiving,
-            start_date: match.depart_date,
-            end_date: match.arrival_date,
-          };
-          array.push(object);
+          if (match) {
+            let object = {
+              _id: item._id,
+              start_country: item.start_country,
+              end_country: item.end_country,
+              traveleler: match.traveler_name,
+              status_from_poster: item.status_from_poster,
+              status_of_receiving: item.status_of_receiving,
+              start_date: match.depart_date,
+              end_date: match.arrival_date,
+            };
+            array.push(object);
+          }
         });
         resolve(array);
       } else {
@@ -118,23 +127,28 @@ const ShommySends = async (start_country, end_country, sender_id) => {
         for await (item of data) {
           ids.push(item.travel_id);
         }
-        const ids1 = ids.map((id) => new ObjectID(id));
+        const ids1 = ids;
         const searchCriteria = { _id: { $in: ids1 } };
+
         const travel = await Travels.find(searchCriteria);
+
         data.forEach((item) => {
           let match = travel.find((item1) => {
-            return item.travel_id === item1.id;
+            return item.travel_id.equals(item1._id);
           });
-          let object = {
-            _id: item._id,
-            start_country: item.start_country,
-            end_country: item.end_country,
-            status_from_poster: item.status_from_poster,
-            status_of_receiving: item.status_of_receiving,
-            start_date: match.depart_date,
-            end_date: match.arrival_date,
-          };
-          array.push(object);
+          if (match) {
+            let object = {
+              _id: item._id,
+              start_country: item.start_country,
+              end_country: item.end_country,
+              traveleler: match.traveler_name,
+              status_from_poster: item.status_from_poster,
+              status_of_receiving: item.status_of_receiving,
+              start_date: match.depart_date,
+              end_date: match.arrival_date,
+            };
+            array.push(object);
+          }
         });
         resolve(array);
       }
@@ -151,25 +165,29 @@ const TravelSenders = async (travel_id, status_from_poster) => {
         travel_id: travel_id,
         status_from_poster: status_from_poster,
       });
+      console.log(send);
       let array = [];
       let ids = [];
       for await (item of send) {
         ids.push(item.sender_id);
       }
-      const ids1 = ids.map((id) => new ObjectID(id));
+      const ids1 = ids;
       const searchCriteria = { _id: { $in: ids1 } };
       const senders = await Users.find(searchCriteria);
       send.forEach((item) => {
         let match = senders.find((item1) => {
-          return item.sender_id === item1._id;
+          return item.sender_id.equals(item1._id);
         });
-        let object = {
-          sender_name: match.name,
-          status_of_receiving: item.status_of_receiving,
-          thing_to_send: item.thing_to_send,
-          kilo: item.kilo,
-        };
-        array.push(object);
+        console.log(item.thing_to_send);
+        if (match) {
+          let object = {
+            sender_name: match.name,
+            status_of_receiving: item.status_of_receiving,
+            thing_to_send: item.thing_to_send,
+            kilo: item.kilo,
+          };
+          array.push(object);
+        }
       });
       resolve(array);
     } catch (error) {

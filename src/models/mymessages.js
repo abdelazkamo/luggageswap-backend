@@ -5,6 +5,9 @@ const MymessagesSchema = mongoose.Schema(
     person1_id: {
       type: mongoose.Schema.Types.ObjectId,
     },
+    discussion_id_for_both: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
     person2_id: {
       type: mongoose.Schema.Types.ObjectId,
     },

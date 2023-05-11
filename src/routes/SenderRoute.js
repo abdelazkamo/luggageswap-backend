@@ -26,9 +26,11 @@ Sendrouter.post("/create/:travel_id", async (req, res) => {
     const user_id = claims.id;
     const person1 = await Users.findById(user_id);
     const person1name = person1.name;
+
     const histravel = await Travels.findById(travel_id);
     const person2_id = histravel.poster_id;
     const person2name = histravel.traveler_name;
+
     await CreateMessages(user_id, person2_id, person1name, person2name);
     // const user = await Users.findById(user_id);
     const travel = await Asksend(travel_id, user_id, body);
@@ -58,7 +60,7 @@ Sendrouter.post("/showmysends", async (req, res) => {
       body.end_country,
       user_id
     );
-    res.json({ msg: "travel created  successfully", travel });
+    res.json({ msg: "travel fetched  successfully", travel });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ msg: "Server error" });
@@ -111,7 +113,7 @@ Sendrouter.put("/receive/:send_id", async (req, res) => {
   }
 });
 ///if you want to see the people for a travel (pending)
-Sendrouter.get("/view_travel_sender/:travel_id", async (req, res) => {
+Sendrouter.get("/view_travel_sender_pending/:travel_id", async (req, res) => {
   try {
     const travel_id = req.params.travel_id;
     const cookie = req.cookies["jwt"];
@@ -131,7 +133,7 @@ Sendrouter.get("/view_travel_sender/:travel_id", async (req, res) => {
   }
 });
 ///if you want to see the people for a travel (accepted)
-Sendrouter.get("/view_travel_sender/:travel_id", async (req, res) => {
+Sendrouter.get("/view_travel_sender_accepted/:travel_id", async (req, res) => {
   try {
     const travel_id = req.params.travel_id;
     const cookie = req.cookies["jwt"];

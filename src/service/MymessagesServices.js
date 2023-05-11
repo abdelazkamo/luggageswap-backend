@@ -1,6 +1,7 @@
 const Mymessages = require("../models/mymessages");
 const Messages = require("../models/messages");
 const Users = require("../models/User");
+const mongoose = require("mongoose");
 //create a discussion
 const CreateMessages = async (
   person1_id,
@@ -14,8 +15,9 @@ const CreateMessages = async (
         person1_id: person1_id,
         person2_id: person2_id,
       });
-      const mymessageid = cheick._id;
+
       if (cheick !== null) {
+        const mymessageid = cheick._id;
         const person = await Users.findById(person1_id);
         const name = person.name;
         const message = new Messages({
@@ -31,6 +33,7 @@ const CreateMessages = async (
         resolve(ok);
       } else {
         const mymessage1 = new Mymessages({
+          discussion_id_for_both: new mongoose.Types.ObjectId(),
           person1_id: person1_id,
           person2_id: person2_id,
           person1name: person1name,
@@ -38,17 +41,17 @@ const CreateMessages = async (
         });
         const ok = await mymessage1.save();
         const mymessage2 = new Mymessages({
-          _id: ok._id,
+          discussion_id_for_both: ok.discussion_id_for_both,
           person1_id: person2_id,
           person2_id: person1_id,
           person1name: person2name,
           person2name: person1name,
         });
-        mymessage2.save();
+        await mymessage2.save();
         const person = await Users.findById(person1_id);
         const name = person.name;
         const message = new Messages({
-          mymessage_id: ok._id,
+          mymessage_id: ok.discussion_id_for_both,
           person_id: person1_id,
           to_id: person2_id,
           person_name: name,
@@ -75,6 +78,7 @@ const Mydiscussions = async (myid) => {
           discussion_id: item._id,
           discussion_with_id: item.to_id,
           discussion_with: item.person2name,
+          mymessage_id: discussion_id_for_both,
         };
         array.push(object);
       }
