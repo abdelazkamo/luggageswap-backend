@@ -9,6 +9,7 @@ const {
   LookupMyTravels,
   UpdateTravel,
   CancelTravel,
+  showTravelToPublics,
 } = require("../service/TravelService");
 //create a schedule
 TravelRouter.post("/create", async (req, res) => {
@@ -92,5 +93,27 @@ TravelRouter.delete("/delete/:id", async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 });
-
+//////show all the travels to the public
+TravelRouter.get("/allthetravels", async (req, res) => {
+  try {
+    const body = req.query;
+    const page = parseInt(body.page || "1");
+    const itemsPerPage = parseInt(body.itemsPerPage || "10");
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const data = await showTravelToPublics(
+      body.departure_point,
+      body.arrival_point,
+      body.depart_date,
+      body.arrival_date,
+      body.max_number_ofday,
+      start,
+      end
+    );
+    res.json({ msg: "travels deleted  successfully", data });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
 module.exports = TravelRouter;
